@@ -110,5 +110,8 @@ export default <style>{`
     width:100%;
     height:auto;
   }
+  .p-grid_list-images{
+    width:300px;
+  }
 
 `}</style>;

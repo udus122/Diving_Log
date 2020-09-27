@@ -16,8 +16,9 @@ class Add_Form extends Component{
             Memo:'',
             image:null,
             url:'',
-            progress:0
-
+            progress:0,
+            checkFileUploadFlg:false,
+            errorMsg:''
         }
 
         this.onChangePrefectures = this.onChangePrefectures.bind(this);
@@ -36,6 +37,7 @@ class Add_Form extends Component{
     handleChange(e){
         if(e.target.files[0]){
             this.setState({image: e.target.files[0]})
+            this.setState({checkFileUploadFlg:true})
         }
     }
 
@@ -65,6 +67,7 @@ class Add_Form extends Component{
             }
         );
         console.log("image: ",this.state.image);
+        event.preventDefault();
     } 
 
     onChangePrefectures(e){
@@ -113,43 +116,72 @@ class Add_Form extends Component{
             Marine_life:this.state.Marine_life,
             Memo:this.state.Memo
         }
-        let db = firebase.database();
-        let ref = db.ref('diving-point-map');
-        console.log(ref);
-        ref.set(data);
-        this.setState({
-            Prefectures:'',
-            Place_Name:'',
-            DAY:'',
-            Shop_Name:'',
-            Weather:'',
-            SuitType:'',
-            Marine_life:'',
-            Memo:'※データを登録しました。ご協力ありがとうございます！！'
+        
+        if(this.isNullForm()){
+            let db = firebase.database();
+            let ref = db.ref('diving-point-map');
+            console.log(ref);
+            ref.set(data);
+            this.setState({
+                Prefectures:'',
+                Place_Name:'',
+                DAY:'',
+                Shop_Name:'',
+                Weather:'',
+                SuitType:'',
+                Marine_life:'',
+                Memo:'※データを登録しました。ご協力ありがとうございます！！'
+             })
+             event.preventDefault();
+         } else {
+             window.alert(this.state.errorMsg)
+             event.preventDefault();
+         }
 
-         })
         }
+        event.preventDefault();
     }
   
+    isNullForm(){
+        if(this.state.Prefectures == ''){
+            this.setState({errorMsg:'Prefecturesを入力してください'})
+            return false;
+        }
+        if(this.state.Place_Name == ''){
+            this.setState({errorMsg:'Place_Nameを入力してください'})
+            return false;
+        }
+        if(this.state.DAY == ''){
+            this.setState({errorMsg:'DAYを入力してください'})
+            return false;
+        }
+        if(this.state.Shop_Name == ''){
+            this.setState({errorMsg:'Shop_Nameを入力してください'})
+            return false;
+        }
+        return true;
+    }
+
     render(){
         return(<div>
+            <form>
                 <table>
                     <tbody>
                         <tr>
                         <th>Prefectures:</th>
-                    <td><input type="text" size="50" maxLength="7"
+                    <td><input type="text" size="50" maxLength="7" required
                         value={this.state.Prefectures}
-                        onChange={this.onChangePrefectures} placeholder="都道府県"/></td>
+                        onChange={this.onChangePrefectures} placeholder="都道府県" /></td>
                         </tr>
                         <tr>
                         <th>Place_Name:</th>
-                        <td><input type="text" size="50" maxLength="15"
+                        <td><input type="text" size="50" maxLength="15" required
                             value={this.state.Place_Name}
                             onChange={this.onChangePlace_Name} placeholder="ポイント名（地名）" /></td>
                         </tr>
                         <tr>
                         <th>DAY:</th>
-                        <td><input type="text" size="50" maxLength="10"
+                        <td><input type="date" size="50" maxLength="10" required
                             value={this.state.DAY}
                             onChange={this.onChangeDAY} placeholder="YYYY/MM/DD" /></td>
                         </tr>
@@ -161,7 +193,7 @@ class Add_Form extends Component{
                         </tr>
                         <tr>
                         <th>Shop_Name:</th>
-                        <td><input type="text" size="50" maxLength="20"
+                        <td><input type="text" size="50" maxLength="20" required
                             value={this.state.Shop_Name}
                             onChange={this.onChangeShop_Name} placeholder="○○ダイビングショップ" /></td>
                         </tr>
@@ -175,7 +207,7 @@ class Add_Form extends Component{
                         <th>Marine life:</th>
                         <td><input type="text" size="50" maxLength="20"
                             value={this.state.Marine_life}
-                            onChange={this.onChangeMarine_life} placeholder="その日一番の生き物はなんでしょうか????" /></td>
+                            onChange={this.onChangeMarine_life} placeholder="その日一番の生き物はなんでしょうか????" required /></td>
                         </tr>
                         <tr>
                         <th>Memo:</th>
@@ -185,6 +217,7 @@ class Add_Form extends Component{
                         </tr>
                     </tbody>
                 </table>
+                
                 <br />
                 <p>あなたのベストショットを共有しませんか????</p>
                 <div className = "FileImage">
@@ -192,7 +225,12 @@ class Add_Form extends Component{
                  <br />
                  <br />
                  <input type = "file" onChange ={this.handleChange} />
+                 {this.state.checkFileUploadFlg ?
                  <button onClick={this.handleUpload}>Upload</button>
+                 :
+                 <p>ファイルを選択してください</p>
+                 }
+                 
                  <br />
                   {this.state.url}
                  <br />
@@ -202,6 +240,7 @@ class Add_Form extends Component{
                 </div>
                     <button onClick={this.exeAdd}>
                             Add</button>
+                            </form>
         </div>)
     };
 };
