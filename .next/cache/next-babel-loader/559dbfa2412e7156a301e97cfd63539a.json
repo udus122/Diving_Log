@@ -1,0 +1,1 @@
+{"ast":null,"code":"import React from \"react\";\nvar __jsx = React.createElement;\nimport Add_Form from '../Component/Add/Add_Form';\nexport default (() => {\n  __jsx(Add_Form, null);\n});","map":null,"metadata":{},"sourceType":"module"}

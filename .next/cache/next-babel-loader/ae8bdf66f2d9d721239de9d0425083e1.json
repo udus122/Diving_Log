@@ -1,0 +1,1 @@
+{"ast":null,"code":"import React from \"react\";\nvar __jsx = React.createElement;\nimport Layout from '../Component/Layout/Layout';\nexport default (() => {\n  return __jsx(\"div\", null, __jsx(Layout, {\n    header: \"Diving_point INFO\"\n  }));\n});","map":null,"metadata":{},"sourceType":"module"}
